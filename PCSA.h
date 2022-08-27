@@ -18,7 +18,6 @@ const double m = (0.78)/error;
 const int M = ceil(m); 
 const int desplazamiento = 64 - log2(M);
 long long int* sketch = new long long int[M];
-
 hash<string> h1;
 
 long R(long x){
@@ -37,13 +36,10 @@ long estimation(long long int* sketch){
         if(R(sketch[i]) - 1 >= 0){
             sum += log2(R(sketch[i]));
         }
-       
     }
     double media = 1.0*sum/M;
     return M * pow(2,media) / phi; 
 }
-
-
 
 void pcsa(const string pathFile, const unsigned char k){
     ifstream file;
@@ -57,7 +53,6 @@ void pcsa(const string pathFile, const unsigned char k){
     while(file >> line){
         if(line[0] != 'A' && line[0] != 'a' && line[0] != 'T' && line[0] != 't' && line[0] != 'C' && line[0] != 'c' && line[0] != 'G' && line[0] != 'g') continue; //linea no valida
         else if(line[1] != 'A' && line[1] != 'a' && line[1] != 'T' && line[1] != 't' && line[1] != 'C' && line[1] != 'c' && line[1] != 'G' && line[1] != 'g') continue; //linea no valida
-
 
         else{ //linea valida
          
