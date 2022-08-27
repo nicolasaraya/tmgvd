@@ -55,21 +55,35 @@ void pcsa(const string pathFile, const unsigned char k){
         else if(line[1] != 'A' && line[1] != 'a' && line[1] != 'T' && line[1] != 't' && line[1] != 'C' && line[1] != 'c' && line[1] != 'G' && line[1] != 'g') continue; //linea no valida
 
         else{ //linea valida
-         
+             
             if(line.size() <= k) {
                 update(line);
                 continue;
             }
+            //cout << "line: " << line << endl;
             #pragma omp parallel for
             for(int i = 0; i < line.size() - k; i++){
                 string kmer; 
-                for(int j = 1; j < k; j++){
-                   if(i+j < line.size()){
-                        kmer += line[i+j]; 
+                int l = 0; 
+                for(int j = 0; j < k; j++){
+
+                   if(i+j+l < line.size()){
+                            char aux = line[i+j+l];
+                            if(aux == 'C' || aux == 'A' || aux == 'G' || aux == 'T'){
+                                kmer += aux ;
+                            }
+                            else if(aux - 32 == 'C' || aux - 32== 'A' || aux -32 == 'G' || aux -32 == 'T'){
+                                kmer += aux - 32 ;
+                            }
+                            else{
+                                j--;
+                                l++;
+                            }
                     }
                     else break;
                 }
                 update(kmer);
+                //cout << "k-mer " << i << ": " << kmer << endl;
                 kmer.clear();
             }
        }
