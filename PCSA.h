@@ -7,8 +7,7 @@
 #include <vector> 
 #include <bitset>
 #include <unistd.h>
-
-
+#include <omp.h>
 
 using namespace std; 
 
@@ -21,10 +20,6 @@ const int desplazamiento = 64 - log2(M);
 long long int* sketch = new long long int[M];
 
 hash<string> h1;
-
-
-
-
 
 long R(long x){
     return (~x & (x+1)); 
@@ -50,54 +45,41 @@ long estimation(long long int* sketch){
 
 
 
-void pcsa(ifstream* file, const unsigned char k){
+void pcsa(const string pathFile, const unsigned char k){
+    ifstream file;
+    file.open(pathFile);
     string line; 
+
     for(int i = 0; i < M; i++) sketch[i] = 0;
 
-    int countLines = 0; 
-    while(std::getline(*file, line)){
-        if(countLines >= 2883199){
-            cout << "line: " << line << endl;
-            cout << line.size() << endl;
-            cout << countLines << endl;
-        }
-        if(countLines%100 == 0) cout << countLines << endl;
+    omp_set_num_threads(8);
+
+    while(file >> line){
         if(line[0] != 'A' && line[0] != 'a' && line[0] != 'T' && line[0] != 't' && line[0] != 'C' && line[0] != 'c' && line[0] != 'G' && line[0] != 'g') continue; //linea no valida
-        
+        else if(line[1] != 'A' && line[1] != 'a' && line[1] != 'T' && line[1] != 't' && line[1] != 'C' && line[1] != 'c' && line[1] != 'G' && line[1] != 'g') continue; //linea no valida
+
+
         else{ //linea valida
-            
-            //cout << line << endl;
-            if(line.size() - k <= 0 ){
+         
+            if(line.size() <= k) {
+                update(line);
                 continue;
-            }    
-            //grande pacifico conchetumare txiuuu
+            }
+            #pragma omp parallel for
             for(int i = 0; i < line.size() - k; i++){
                 string kmer; 
-
-                
-                
                 for(int j = 1; j < k; j++){
-                    if(i+j < line.size()){
+                   if(i+j < line.size()){
                         kmer += line[i+j]; 
                     }
-                    else{
-                        break;
-                    }
-                
+                    else break;
                 }
-                
-                //update(kmer);
-                
+                update(kmer);
+                kmer.clear();
             }
-        }
-        countLines++;
-        line.clear();
+       }
     }
-    cout << "ok" << endl;
     cout << "Cardinalidad estimada: " << estimation(sketch) << endl; 
-
-
-
 }
 
 #endif
