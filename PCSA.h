@@ -62,10 +62,10 @@ void pcsa(const string pathFile, const unsigned char k){
             }
             //cout << "line: " << line << endl;
             #pragma omp parallel for
-            for(int i = 0; i < line.size() - k; i++){
+            for(int i = 0; i <= line.size() - k; i++){
                 string kmer; 
                 int l = 0; 
-                for(int j = 0; j < k; j++){
+                for(int j = 0; j <= k; j++){
 
                    if(i+j+l < line.size()){
                             char aux = line[i+j+l];
