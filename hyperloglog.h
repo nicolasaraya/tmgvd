@@ -24,8 +24,12 @@ void update_alpha(){
 }
 
 int p(long long int x){
-    int pos = __builtin_clz(x);
-    return pos + 1;
+    int pos = 0;
+    while (x > 0) {
+        x = x >> 1;
+        pos++;
+    }
+    return 64-pos-1;
 }
 
 double compute(int* M_){
