@@ -19,9 +19,9 @@ int main(int argc, char const *argv[]){
 
     TIMERSTART(PCSA);
     //pcsa(pathFile, k);
-    //hyper_loglog(pathFile,k);
-    double asd = double(5)/double(2);
-    cout << asd << endl;
+    hyper_loglog(pathFile,k);
+    //double asd = double(5)/double(2);
+    //cout << asd << endl;
     TIMERSTOP(PCSA);
 
     //cout << "si: " <<  __builtin_clz(128) << endl; 

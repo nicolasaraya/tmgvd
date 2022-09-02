@@ -3,7 +3,7 @@
 #include <iostream> 
 #include <math.h>
 using namespace std; 
-
+#include <bits/stdc++.h>
 const int b = 4;
 const int m_ = pow(2,b);
 double alpha;
@@ -29,13 +29,24 @@ int p(long long int x){
 }
 
 double compute(int* M_){
+    cout << "computando " << endl;
     double sum = 0;
     for(int j=0 ; j < m_ ; j++){
         sum+= pow(2,-M_[j]);
     }
-    //double E = alpha*pow(m_,2)*pow(sum,-1);
-    double E = 2;
+    double E = alpha*pow(m_,2)*pow(sum,-1);
+    //double E = 2;
     return E;
+}
+void add(string kmer){
+    long long int x = h(kmer);
+
+    int  j = (~((1UL<< (64-b))-1) & x) >> (64-b);
+    long long int w = ((1UL<< (64-b))-1) & x;
+
+    //cout << "J: " << j << " / " << "w: " << w << endl;
+
+    M_[j] = max(M_[j],p(w));
 }
 
 void hyper_loglog(const string pathFile, const unsigned char k){
@@ -45,36 +56,53 @@ void hyper_loglog(const string pathFile, const unsigned char k){
     file.open(pathFile);
     string line; 
 
-    int i = 0;
+    for(int i = 0; i < m_; i++) M_[i] = 0;
+    //int i = 0;
+    omp_set_num_threads(8);
+
     while(file >> line){
-        if(i == 300){
+        /*i++;
+        if(i == 3000){
             break;
-        }
-        cout << line << endl;
+        }*/
+        //cout << line << endl;
         if(line[0] != 'A' && line[0] != 'a' && line[0] != 'T' && line[0] != 't' && line[0] != 'C' && line[0] != 'c' && line[0] != 'G' && line[0] != 'g') continue; //linea no valida
         else if(line[1] != 'A' && line[1] != 'a' && line[1] != 'T' && line[1] != 't' && line[1] != 'C' && line[1] != 'c' && line[1] != 'G' && line[1] != 'g') continue; //linea no valida
 
         else{ //linea valida
-            
+            if(line.size() <= k) {
+                add(line);
+                continue;
+            }
             //cout << "line: " << line << endl;
+            #pragma omp parallel for
             for(int i = 0; i <= line.size() - k; i++){
                 string kmer; 
                 int l = 0; 
-                for(int j = 0; j < k; j++){
-                    kmer += line[i+j];
+                for(int j = 0; j <= k; j++){
+
+                    if(i+j+l < line.size()){
+                        char aux = line[i+j+l];
+                        if(aux == 'C' || aux == 'A' || aux == 'G' || aux == 'T'){
+                            kmer += aux ;
+                        }
+                        else if(aux - 32 == 'C' || aux - 32== 'A' || aux -32 == 'G' || aux -32 == 'T'){
+                            kmer += aux - 32 ;
+                        }
+                        else{
+                            j--;
+                            l++;
+                        }
+                    }
+                    else break;
                 }
-                cout << "kmer: " << kmer << endl;
-
-                long long int x = h(kmer);
-
-                //j = b
-                //w =  64-b
-                //M_[j] = max(M_[j],p(w))
-
+                add(kmer);
+                //cout << "k-mer " << i << ": " << kmer << endl;
+                kmer.clear();
             }
         }
     }
-    compute(M_);
+    cout << "Cardinalidad estimada: " << compute(M_) << endl; 
 
 }
 #endif
