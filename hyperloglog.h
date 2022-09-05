@@ -4,7 +4,7 @@
 #include <math.h>
 using namespace std; 
 #include <bits/stdc++.h>
-const int b = 4;
+const int b = 6;
 const int m_ = pow(2,b);
 double alpha;
 
@@ -37,6 +37,7 @@ double compute(int* M_){
     double sum = 0;
     for(int j=0 ; j < m_ ; j++){
         sum+= pow(2,-M_[j]);
+        cout << "sum: " << sum << endl;
     }
     double E = alpha*pow(m_,2)*pow(sum,-1);
     //double E = 2;
@@ -44,12 +45,20 @@ double compute(int* M_){
 }
 void add(string kmer){
     long long int x = h(kmer);
-
     int  j = (~((1UL<< (64-b))-1) & x) >> (64-b);
     long long int w = ((1UL<< (64-b))-1) & x;
+    /*
+    bitset<64> x_bit(x);
+    bitset<64> j_bit(x >> 60);
+
+    cout << x_bit << endl;
+    cout << j_bit << endl;
+    cout << "*******" << endl;
+    */
 
     //cout << "J: " << j << " / " << "w: " << w << endl;
-
+    //j = abs(j);
+    //w = abs(w);
     M_[j] = max(M_[j],p(w));
 }
 
@@ -61,14 +70,14 @@ void hyper_loglog(const string pathFile, const unsigned char k){
     string line; 
 
     for(int i = 0; i < m_; i++) M_[i] = 0;
-    //int i = 0;
-    omp_set_num_threads(8);
+    int i = 0;
+    omp_set_num_threads(4);
 
     while(file >> line){
-        /*i++;
-        if(i == 3000){
-            break;
-        }*/
+        i++;
+        if(i % 3000==0){
+            cout << i << endl;
+        }
         //cout << line << endl;
         if(line[0] != 'A' && line[0] != 'a' && line[0] != 'T' && line[0] != 't' && line[0] != 'C' && line[0] != 'c' && line[0] != 'G' && line[0] != 'g') continue; //linea no valida
         else if(line[1] != 'A' && line[1] != 'a' && line[1] != 'T' && line[1] != 't' && line[1] != 'C' && line[1] != 'c' && line[1] != 'G' && line[1] != 'g') continue; //linea no valida

@@ -25,8 +25,19 @@ long R(long x){
 }
 
 void update(string kmer){
-    long long int x = h1(kmer); 
+    unsigned long long int x = h1(kmer); 
+    bitset<64> x_bit(x);
+
     int y = x >> desplazamiento;
+
+    /*
+    bitset<64> y_bit(y);
+    cout << "x: " << x << " / kmer: " << kmer << endl;
+    cout << x_bit << endl;
+    cout << y_bit << endl;
+    cout << y << endl;
+    cout << "*******" << endl;
+    */
     sketch[y] = sketch[y] | R(x);
 }
 
@@ -48,7 +59,7 @@ void pcsa(const string pathFile, const unsigned char k){
 
     for(int i = 0; i < M; i++) sketch[i] = 0;
 
-    omp_set_num_threads(8);
+    omp_set_num_threads(1);
 
     while(file >> line){
         if(line[0] != 'A' && line[0] != 'a' && line[0] != 'T' && line[0] != 't' && line[0] != 'C' && line[0] != 'c' && line[0] != 'G' && line[0] != 'g') continue; //linea no valida
