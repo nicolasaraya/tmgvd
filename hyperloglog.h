@@ -23,42 +23,51 @@ void update_alpha(){
     }   
 }
 
-int p(long long int x){
+int p(unsigned long long int x){
     int pos = 0;
     while (x > 0) {
         x = x >> 1;
         pos++;
     }
-    return 64-pos-1;
+    return 64-pos+1;
+    
+    //bitset<64> x_bit(x);
+    //cout << x_bit << endl;
+    //cout << __builtin_ctzll(x) << endl;
+    //cout << "*  " << endl;
+    return __builtin_ctzll(x);
 }
 
 double compute(int* M_){
     cout << "computando " << endl;
     double sum = 0;
+    int V = 0;
     for(int j=0 ; j < m_ ; j++){
         sum+= pow(2,-M_[j]);
         cout << "sum: " << sum << endl;
+        if(M_[j] == 0) V++;
     }
+    cout << "alpha: " << alpha << " ; m_^2: " << pow(m_,2) << endl;
     double E = alpha*pow(m_,2)*pow(sum,-1);
     //double E = 2;
+    cout << "resultado: " << E << endl;
+    if( (E <= (5/2)*m_) && V!= 0){
+        cout << "primera condicion" << endl;
+        E = m_ * log2(m_/V);
+    }
+    if(E > (1/30)*pow(2,64)){
+        cout << "segunda condicion" << endl;
+        E = -1 * pow(2,64)*log2( (1-E) / pow(2,64) );
+    }
     return E;
 }
 void add(string kmer){
-    long long int x = h(kmer);
-    int  j = (~((1UL<< (64-b))-1) & x) >> (64-b);
-    long long int w = ((1UL<< (64-b))-1) & x;
-    /*
-    bitset<64> x_bit(x);
-    bitset<64> j_bit(x >> 60);
+    unsigned long long int x = h(kmer);
+    //int  j = (~((1UL<< (64-b))-1) & x) >> (64-b); 
+    int j = x >> (64-b);
+    //unsigned long long int w = ((1UL<< (64-b))-1) & x;
+    unsigned long long int w = (x << b) >> b ;
 
-    cout << x_bit << endl;
-    cout << j_bit << endl;
-    cout << "*******" << endl;
-    */
-
-    //cout << "J: " << j << " / " << "w: " << w << endl;
-    //j = abs(j);
-    //w = abs(w);
     M_[j] = max(M_[j],p(w));
 }
 
