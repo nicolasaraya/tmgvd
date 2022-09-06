@@ -29,7 +29,7 @@ int p(unsigned long long int x){
         x = x >> 1;
         pos++;
     }
-    return 64-pos+1;
+    return 64-pos+1-b;
     
     //bitset<64> x_bit(x);
     //cout << x_bit << endl;
@@ -55,7 +55,7 @@ double compute(int* M_){
         cout << "primera condicion" << endl;
         E = m_ * log2(m_/V);
     }
-    if(E > (1/30)*pow(2,64)){
+    if(E > ((double)1/(double)30)*(pow(2,64))){
         cout << "segunda condicion" << endl;
         E = -1 * pow(2,64)*log2( (1-E) / pow(2,64) );
     }
@@ -84,7 +84,7 @@ void hyper_loglog(const string pathFile, const unsigned char k){
 
     while(file >> line){
         i++;
-        if(i % 3000==0){
+        if(i % 100000==0){
             cout << i << endl;
         }
         //cout << line << endl;
