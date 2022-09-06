@@ -5,7 +5,7 @@ using namespace std;
 HLL::HLL(const string pathFile, const unsigned char k){
     this->pathFile = pathFile;
     this->k = k; 
-    M = new uint32_t[m];
+    M = new int[m];
     
     for(int i = 0; i < m; i++) M[i] = 0;
 
@@ -29,7 +29,7 @@ void HLL::update_alpha(){
     }   
 }
 
-uint32_t HLL::p(uint64_t x){
+int HLL::p(uint64_t x){
     int pos = 0;
     while (x > 0) {
         x = x >> 1;
@@ -56,30 +56,30 @@ void HLL::add(string kmer){
 
 
 double HLL::estimate(){
-    //cout << "computando " << endl;
+    cout << "computando " << endl;
     double sum = 0;
     int V = 0;
     for(int j=0 ; j < m ; j++){
         sum+= pow(2,-M[j]);
-        //cout << "sum: " << sum << endl;
+        cout << "sum: " << sum << endl;
         if(M[j] == 0) V++;
     }
-    //cout << "alpha: " << alpha << " ; m_^2: " << pow(m,2) << endl;
+    cout << "alpha: " << alpha << " ; m_^2: " << pow(m,2) << endl;
     double E = alpha*pow(m,2)*pow(sum,-1);
  
-    //cout << "resultado: " << E << endl;
-    if( (E <= (5/2)*m) && V!= 0){
-        //cout << "primera condicion" << endl;
+    cout << "resultado: " << E << endl;
+    if( (E <= ((double)5/(double)2)*m) && V!= 0){
+        cout << "primera condicion" << endl;
         E = m * log2(m/V);
     }
     if(E > ((double)1/(double)30)*(pow(2,64))){
-        //cout << "segunda condicion" << endl;
+        cout << "segunda condicion" << endl;
         E = -1 * pow(2,64)*log2( (1-E) / pow(2,64) );
     }
     return E;
 }
 
-uint64_t HLL::compute(){
+double HLL::compute(){
     ifstream file;
     file.open(pathFile);
     string line; 
@@ -132,3 +132,14 @@ uint64_t HLL::compute(){
 }
 
 
+bool HLL::unionHLL(int* M2){
+    for(int i = 0; i < m; i++){
+        if(M2[i] == NULL) return false; 
+        M[i] = max(M[i], M2[i]);
+    }
+    return true;
+}
+
+int* HLL::getSketch(){
+    return M;
+}

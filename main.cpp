@@ -19,6 +19,7 @@ const string pathFile = "./files/GCF_000308155.1_EptFus1.0_genomic.fna";
 int main(int argc, char const *argv[]){
     uint64_t resPCSA; 
     double resHLL; 
+    
     TIMERSTART(_PCSA);
     PCSA* p = new PCSA(pathFile, k);
     resPCSA = p->compute();
