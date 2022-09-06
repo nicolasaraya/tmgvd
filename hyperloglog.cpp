@@ -1,51 +1,35 @@
-#ifndef HyperLogLog_h
-#define HyperLogLog_h
-#include <iostream> 
-#include <math.h>
-#include <bits/stdc++.h>
-#include <omp.h>
+#include "hyperloglog.h"
 
 using namespace std; 
 
+HLL::HLL(const string pathFile, const unsigned char k){
+    this->pathFile = pathFile;
+    this->k = k; 
+    M = new uint32_t[m];
+    
+    for(int i = 0; i < m; i++) M[i] = 0;
 
-class HLL{
-    public:
-        HLL(const string, const unsigned char);
-        ~HLL();
-        uint64_t compute();
-    private:
-        const int b = 6;
-        const int m = pow(2,b);
-        double alpha;
-        uint32_t* M;
-        hash<string> h;
-        string pathFile; 
-        unsigned char k;
-        /*********/
-        void update_alpha();
-        uint32_t p(uint64_t);
-        void add(string); 
-        double estimate();
+    update_alpha();
 
+}
 
-};
-/*
+HLL::~HLL(){
+    delete(M);
+}
 
-
-
-void update_alpha(){
-    switch(m_){
+void HLL::update_alpha(){
+    switch(m){
         case 16: alpha = 0.673;
             break;
         case 32: alpha = 0.697;
             break;
         case 64: alpha = 0.709;
             break;
-        default: alpha = 0.7213 / (1.0 + 1.079 / double(m_));
+        default: alpha = 0.7213 / (1.0 + 1.079 / double(m));
     }   
 }
 
-int p(unsigned long long int x){
+uint32_t HLL::p(uint64_t x){
     int pos = 0;
     while (x > 0) {
         x = x >> 1;
@@ -60,56 +44,53 @@ int p(unsigned long long int x){
     return __builtin_ctzll(x);
 }
 
-double compute(int* M_){
-    cout << "computando " << endl;
+void HLL::add(string kmer){
+    uint64_t x = h(kmer);
+    //int  j = (~((1UL<< (64-b))-1) & x) >> (64-b); 
+    uint32_t j = x >> (64-b);
+    //unsigned long long int w = ((1UL<< (64-b))-1) & x;
+    uint64_t w = (x << b) >> b ;
+
+    M[j] = max(M[j],p(w));
+}
+
+
+double HLL::estimate(){
+    //cout << "computando " << endl;
     double sum = 0;
     int V = 0;
-    for(int j=0 ; j < m_ ; j++){
-        sum+= pow(2,-M_[j]);
-        cout << "sum: " << sum << endl;
-        if(M_[j] == 0) V++;
+    for(int j=0 ; j < m ; j++){
+        sum+= pow(2,-M[j]);
+        //cout << "sum: " << sum << endl;
+        if(M[j] == 0) V++;
     }
-    cout << "alpha: " << alpha << " ; m_^2: " << pow(m_,2) << endl;
-    double E = alpha*pow(m_,2)*pow(sum,-1);
-    //double E = 2;
-    cout << "resultado: " << E << endl;
-    if( (E <= (5/2)*m_) && V!= 0){
-        cout << "primera condicion" << endl;
-        E = m_ * log2(m_/V);
+    //cout << "alpha: " << alpha << " ; m_^2: " << pow(m,2) << endl;
+    double E = alpha*pow(m,2)*pow(sum,-1);
+ 
+    //cout << "resultado: " << E << endl;
+    if( (E <= (5/2)*m) && V!= 0){
+        //cout << "primera condicion" << endl;
+        E = m * log2(m/V);
     }
     if(E > ((double)1/(double)30)*(pow(2,64))){
-        cout << "segunda condicion" << endl;
+        //cout << "segunda condicion" << endl;
         E = -1 * pow(2,64)*log2( (1-E) / pow(2,64) );
     }
     return E;
 }
-void add(string kmer){
-    unsigned long long int x = h(kmer);
-    //int  j = (~((1UL<< (64-b))-1) & x) >> (64-b); 
-    int j = x >> (64-b);
-    //unsigned long long int w = ((1UL<< (64-b))-1) & x;
-    unsigned long long int w = (x << b) >> b ;
 
-    M_[j] = max(M_[j],p(w));
-}
-
-void hyper_loglog(const string pathFile, const unsigned char k){
-
-    update_alpha();
+uint64_t HLL::compute(){
     ifstream file;
     file.open(pathFile);
     string line; 
 
-    for(int i = 0; i < m_; i++) M_[i] = 0;
-    int i = 0;
-    omp_set_num_threads(4);
+    uint32_t count = 1;
+
+    omp_set_num_threads(7);
 
     while(file >> line){
-        i++;
-        if(i % 100000==0){
-            cout << i << endl;
-        }
-        //cout << line << endl;
+        if(count++ % 100000 == 0) cout << count << endl;
+        
         if(line[0] != 'A' && line[0] != 'a' && line[0] != 'T' && line[0] != 't' && line[0] != 'C' && line[0] != 'c' && line[0] != 'G' && line[0] != 'g') continue; //linea no valida
         else if(line[1] != 'A' && line[1] != 'a' && line[1] != 'T' && line[1] != 't' && line[1] != 'C' && line[1] != 'c' && line[1] != 'G' && line[1] != 'g') continue; //linea no valida
 
@@ -120,10 +101,10 @@ void hyper_loglog(const string pathFile, const unsigned char k){
             }
             //cout << "line: " << line << endl;
             #pragma omp parallel for
-            for(int i = 0; i <= line.size() - k; i++){
+            for(size_t i = 0; i <= line.size() - k; i++){
                 string kmer; 
                 int l = 0; 
-                for(int j = 0; j <= k; j++){
+                for(size_t j = 0; j <= k; j++){
 
                     if(i+j+l < line.size()){
                         char aux = line[i+j+l];
@@ -146,8 +127,8 @@ void hyper_loglog(const string pathFile, const unsigned char k){
             }
         }
     }
-    cout << "Cardinalidad estimada: " << compute(M_) << endl; 
+    return estimate();
 
 }
-*/
-#endif
+
+
