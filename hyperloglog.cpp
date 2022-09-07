@@ -68,13 +68,13 @@ double HLL::estimate(){
     double E = alpha*pow(m,2)*pow(sum,-1);
  
     cout << "resultado: " << E << endl;
-    if( (E <= ((double)5/(double)2)*m) && V!= 0){
+    if( (E <= 2.5*m) && V!= 0){
         cout << "primera condicion" << endl;
         E = m * log2(m/V);
     }
-    if(E > ((double)1/(double)30)*(pow(2,64))){
+    if(E > (1.0/30.0)*(pow(2,64))){
         cout << "segunda condicion" << endl;
-        E = -1 * pow(2,64)*log2( (1-E) / pow(2,64) );
+        E = -1 * pow(2,64)*log2( 1- ( E / pow(2,64)) );
     }
     return E;
 }
