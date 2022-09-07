@@ -36,11 +36,6 @@ int HLL::p(uint64_t x){
         pos++;
     }
     return 64-pos+1-b;
-    
-    //bitset<64> x_bit(x);
-    //cout << x_bit << endl;
-    //cout << __builtin_ctzll(x) << endl;
-    //cout << "*  " << endl;
     return __builtin_ctzll(x);
 }
 
