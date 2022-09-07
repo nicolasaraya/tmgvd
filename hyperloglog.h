@@ -2,7 +2,7 @@
 #define HyperLogLog_h
 #include <iostream> 
 #include <math.h>
-#include <bits/stdc++.h>
+#include <fstream>
 #include <omp.h>
 
 using namespace std; 
@@ -13,8 +13,9 @@ class HLL{
         HLL(const string, const unsigned char);
         ~HLL();
         double compute();
-        bool unionHLL(int*); 
         int* getSketch();
+        double estimate();
+        bool unionHLL(int*);
     private:
         const int b = 6;
         const int m = pow(2,b);
@@ -27,6 +28,11 @@ class HLL{
         void update_alpha();
         int p(uint64_t);
         void add(string); 
-        double estimate();
 };
+
+
+
 #endif
+
+
+

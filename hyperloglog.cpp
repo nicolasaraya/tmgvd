@@ -134,7 +134,6 @@ double HLL::compute(){
 
 bool HLL::unionHLL(int* M2){
     for(int i = 0; i < m; i++){
-        if(M2[i] == NULL) return false; 
         M[i] = max(M[i], M2[i]);
     }
     return true;
