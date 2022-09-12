@@ -11,8 +11,8 @@ using namespace std;
 
 const unsigned char k = 31; 
 //const string pathFile = "/home/fly/bigdata/files/GCF_000001405.39_GRCh38.p13_genomic.fna";
-//const string pathFile = "./files/GCF_000308155.1_EptFus1.0_genomic.fna";
-const string pathFile = "./files/test2.fna";
+const string pathFile = "./files/GCF_000308155.1_EptFus1.0_genomic.fna";
+//const string pathFile = "./files/test2.fna";
 
 
 double Jaccard(HLL* hll1, HLL* hll2){

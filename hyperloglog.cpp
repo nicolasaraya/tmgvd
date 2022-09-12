@@ -6,7 +6,7 @@ HLL::HLL(const string pathFile, const unsigned char k){
     this->pathFile = pathFile;
     this->k = k; 
     M = new int[m];
-    
+    mtx = new mutex[m];
     for(int i = 0; i < m; i++) M[i] = 0;
 
     update_alpha();
@@ -45,8 +45,9 @@ void HLL::add(string kmer){
     uint32_t j = x >> (64-b);
     //unsigned long long int w = ((1UL<< (64-b))-1) & x;
     uint64_t w = (x << b) >> b ;
-
+    mtx[j].lock();
     M[j] = max(M[j],p(w));
+    mtx[j].unlock();
 }
 
 

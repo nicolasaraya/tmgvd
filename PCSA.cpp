@@ -4,12 +4,14 @@ PCSA::PCSA(const string pathFile, const unsigned char k){
     this->pathFile = pathFile; 
     this->k = k; 
     sketch = new uint64_t[M];
+    mtx = new mutex[M];
     for(size_t i = 0; i < M; i++) sketch[i] = 0;
 
 }
 
 PCSA::~PCSA(){
     delete(sketch);
+    delete(mtx);
 }
 
 uint64_t PCSA::R(uint64_t x){
@@ -19,7 +21,9 @@ uint64_t PCSA::R(uint64_t x){
 void PCSA::update(string kmer){
     uint64_t x = h1(kmer); 
     unsigned char y = x >> desplazamiento;
+    mtx[y].lock();
     sketch[y] = sketch[y] | R(x);
+    mtx[y].unlock();
 }
 
 uint64_t PCSA::estimation(){

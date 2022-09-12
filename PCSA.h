@@ -8,7 +8,7 @@
 #include <bitset>
 #include <unistd.h>
 #include <omp.h>
-
+#include <mutex> 
 using namespace std; 
 
 
@@ -26,6 +26,7 @@ class PCSA{
         const double error = 0.05;
         const double m =(0.78)/error ; 
         const unsigned int M = ceil(m); 
+        mutex* mtx;
         const unsigned char desplazamiento = 64 - log2(M);
         uint64_t* sketch;
         hash<string> h1;

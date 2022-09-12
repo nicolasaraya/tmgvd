@@ -4,6 +4,7 @@
 #include <math.h>
 #include <fstream>
 #include <omp.h>
+#include <mutex>
 
 using namespace std; 
 
@@ -20,6 +21,7 @@ class HLL{
         const int b = 6;
         const int m = pow(2,b);
         double alpha;
+        mutex* mtx;
         int* M;
         hash<string> h;
         string pathFile; 
