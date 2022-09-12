@@ -15,6 +15,7 @@ HLL::HLL(const string pathFile, const unsigned char k){
 
 HLL::~HLL(){
     delete(M);
+    delete(mtx);
 }
 
 void HLL::update_alpha(){
