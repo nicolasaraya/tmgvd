@@ -12,6 +12,8 @@ using namespace std;
 const unsigned char k = 31; 
 //const string pathFile = "/home/fly/bigdata/files/GCF_000001405.39_GRCh38.p13_genomic.fna";
 const string pathFile = "./files/GCF_000308155.1_EptFus1.0_genomic.fna";
+const string pathFile2 = "./files/GCF_000001405.39_GRCh38.p13_genomic.fna";
+
 //const string pathFile = "./files/test2.fna";
 
 
@@ -28,23 +30,31 @@ double Jaccard(HLL* hll1, HLL* hll2){
 
 int main(int argc, char const *argv[]){
     uint64_t resPCSA; 
-    double resHLL; 
+    double resHLL, resHLL2; 
     
     TIMERSTART(_PCSA);
     PCSA* p = new PCSA(pathFile, k);
     resPCSA = p->compute();
     TIMERSTOP(_PCSA);
-    if(p !=NULL) delete(p);
 
     TIMERSTART(_HLL);
     HLL* h = new HLL(pathFile, k);
     resHLL = h->compute();
     TIMERSTOP(_HLL);
-    if(h !=NULL) delete(h);
+    TIMERSTART(_HLL2);
+    HLL* h2 = new HLL(pathFile2, k);
+    resHLL2 = h2->compute();
+    TIMERSTOP(_HLL2);
 
     cout << "PCSA estimation: " << resPCSA <<endl;
-    cout << "HyperLogLog estimation: " << resHLL << endl;
+    cout << "HyperLogLog estimation: " << resHLL << ", " <<  resHLL2 << endl;
+    cout << "Jaccard: " << Jaccard(h,h2) << endl; 
 
+
+    
+    if(h != NULL) delete(h);
+    if(h2 != NULL) delete(h2);
+    if(p != NULL) delete(p);
     return 0;
 }
 
