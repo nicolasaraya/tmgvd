@@ -24,7 +24,7 @@ class PCSA{
         /*****************/
         const double phi = 0.77351; 
         const double error = 0.05;
-        const double m = (0.78)/error; 
+        const double m =(0.78)/error ; 
         const unsigned int M = ceil(m); 
         const unsigned char desplazamiento = 64 - log2(M);
         uint64_t* sketch;

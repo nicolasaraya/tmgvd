@@ -51,24 +51,24 @@ void HLL::add(string kmer){
 
 
 double HLL::estimate(){
-    cout << "computando " << endl;
+    //cout << "computando " << endl;
     double sum = 0;
     int V = 0;
     for(int j=0 ; j < m ; j++){
         sum+= pow(2,-M[j]);
-        cout << "sum: " << sum << endl;
+        //cout << "sum: " << sum << endl;
         if(M[j] == 0) V++;
     }
-    cout << "alpha: " << alpha << " ; m_^2: " << pow(m,2) << endl;
+    //cout << "alpha: " << alpha << " ; m_^2: " << pow(m,2) << endl;
     double E = alpha*pow(m,2)*pow(sum,-1);
  
-    cout << "resultado: " << E << endl;
+    //cout << "resultado: " << E << endl;
     if( (E <= 2.5*m) && V!= 0){
-        cout << "primera condicion" << endl;
+        //cout << "primera condicion" << endl;
         E = m * log2(m/V);
     }
     if(E > (1.0/30.0)*(pow(2,64))){
-        cout << "segunda condicion" << endl;
+        //cout << "segunda condicion" << endl;
         E = -1 * pow(2,64)*log2( 1- ( E / pow(2,64)) );
     }
     return E;
@@ -79,12 +79,11 @@ double HLL::compute(){
     file.open(pathFile);
     string line; 
 
-    uint32_t count = 1;
 
     omp_set_num_threads(7);
 
     while(file >> line){
-        if(count++ % 100000 == 0) cout << count << endl;
+        //if(count++ % 100000 == 0) cout << count << endl;
         
         if(line[0] != 'A' && line[0] != 'a' && line[0] != 'T' && line[0] != 't' && line[0] != 'C' && line[0] != 'c' && line[0] != 'G' && line[0] != 'g') continue; //linea no valida
         else if(line[1] != 'A' && line[1] != 'a' && line[1] != 'T' && line[1] != 't' && line[1] != 'C' && line[1] != 'c' && line[1] != 'G' && line[1] != 'g') continue; //linea no valida
