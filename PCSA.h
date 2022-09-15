@@ -17,10 +17,12 @@ class PCSA{
         PCSA(const string, const unsigned char);
         ~PCSA();
         uint64_t compute();
+        bool unionPCSA(uint64_t*);
+        uint64_t* getSketch(); 
+        uint64_t estimation();
     private:
         uint64_t R(uint64_t);
         void update(string);
-        uint64_t estimation();
         /*****************/
         const double phi = 0.77351; 
         const double error = 0.05;

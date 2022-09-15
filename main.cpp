@@ -17,11 +17,21 @@ const string pathFile2 = "./files/GCF_000001405.39_GRCh38.p13_genomic.fna";
 //const string pathFile = "./files/test2.fna";
 
 
-double Jaccard(HLL* hll1, HLL* hll2){
+double JaccardHLL(HLL* hll1, HLL* hll2){
     double A = hll1->estimate(); 
     double B = hll2->estimate();
     hll1->unionHLL(hll2->getSketch()); 
     double AuB = hll1->estimate();
+    double AnB = A + B - AuB; 
+    double jac = AnB/AuB;  
+    return jac; 
+}
+
+double JaccardPCSA(PCSA* p, PCSA* p2){
+    double A = p->estimation(); 
+    double B = p2->estimation();
+    p->unionPCSA(p2->getSketch()); 
+    double AuB = p->estimation();
     double AnB = A + B - AuB; 
     double jac = AnB/AuB;  
     return jac; 
@@ -36,6 +46,10 @@ int main(int argc, char const *argv[]){
     PCSA* p = new PCSA(pathFile, k);
     resPCSA = p->compute();
     TIMERSTOP(_PCSA);
+    TIMERSTART(_PCSA2);
+    PCSA* p2 = new PCSA(pathFile, k);
+    resPCSA = p2->compute();
+    TIMERSTOP(_PCSA2);
 
     TIMERSTART(_HLL);
     HLL* h = new HLL(pathFile, k);
@@ -48,13 +62,15 @@ int main(int argc, char const *argv[]){
 
     cout << "PCSA estimation: " << resPCSA <<endl;
     cout << "HyperLogLog estimation: " << resHLL << ", " <<  resHLL2 << endl;
-    cout << "Jaccard: " << Jaccard(h,h2) << endl; 
+    cout << "JaccardPCSA: " << JaccardPCSA(p,p2) << endl; 
+    cout << "JaccardHLL: " << JaccardHLL(h,h2) << endl; 
 
 
     
     if(h != NULL) delete(h);
     if(h2 != NULL) delete(h2);
     if(p != NULL) delete(p);
+    if(p2 != NULL) delete(p2);
     return 0;
 }
 

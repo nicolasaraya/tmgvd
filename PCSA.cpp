@@ -4,6 +4,7 @@ PCSA::PCSA(const string pathFile, const unsigned char k){
     this->pathFile = pathFile; 
     this->k = k; 
     sketch = new uint64_t[M];
+    //cout << M << endl; 
     mtx = new mutex[M];
     for(size_t i = 0; i < M; i++) sketch[i] = 0;
 
@@ -27,7 +28,7 @@ void PCSA::update(string kmer){
 }
 
 uint64_t PCSA::estimation(){
-    uint32_t sum = 0;
+    uint64_t sum = 0;
     for(size_t i = 0; i < M; i++) {
         if(R(sketch[i]) - 1 >= 0){
             sum += log2(R(sketch[i]));
@@ -37,13 +38,26 @@ uint64_t PCSA::estimation(){
     return M * pow(2,media) / phi; 
 }
 
+bool PCSA::unionPCSA(uint64_t* sketch2){
+    for(size_t i = 0; i < M; i++){
+        sketch[i] = max(sketch[i], sketch2[i]);
+    }
+    return true;
+}
+
+uint64_t* PCSA::getSketch(){
+    return sketch; 
+}
+
+
 uint64_t PCSA::compute(){
-    cout << m << ","  <<  M << endl;
+    //cout << m << ","  <<  M << endl;
     ifstream file;
     file.open(pathFile);
     string line; 
 
     omp_set_num_threads(7);
+    //uint64_t count = 0;
     while(file >> line){
         //if(count++ % 100000==0) cout << count << endl;
         if(line[0] != 'A' && line[0] != 'a' && line[0] != 'T' && line[0] != 't' && line[0] != 'C' && line[0] != 'c' && line[0] != 'G' && line[0] != 'g') continue; //linea no valida
@@ -61,7 +75,6 @@ uint64_t PCSA::compute(){
                 string kmer; 
                 int l = 0; 
                 for(size_t j = 0; j <= k; j++){
-
                    if(i+j+l < line.size()){
                             char aux = line[i+j+l];
                             if(aux == 'C' || aux == 'A' || aux == 'G' || aux == 'T'){
