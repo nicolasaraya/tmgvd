@@ -81,11 +81,11 @@ double HLL::compute(){
     file.open(pathFile);
     string line; 
     uint64_t count = 0;
-
+    uint64_t countKmers = 0;
     omp_set_num_threads(7);
 
     while(file >> line){
-        if(count++ % 100000 == 0) cout << count << endl;
+        //if(count++ % 100000 == 0) cout << count << endl;
         
         if(line[0] != 'A' && line[0] != 'a' && line[0] != 'T' && line[0] != 't' && line[0] != 'C' && line[0] != 'c' && line[0] != 'G' && line[0] != 'g') continue; //linea no valida
         else if(line[1] != 'A' && line[1] != 'a' && line[1] != 'T' && line[1] != 't' && line[1] != 'C' && line[1] != 'c' && line[1] != 'G' && line[1] != 'g') continue; //linea no valida
@@ -95,7 +95,8 @@ double HLL::compute(){
                 add(line);
                 continue;
             }
-            //cout << "line: " << line << endl;
+            //cout << "line: " << line << endl;            countKmers += line.size() - k;
+            countKmers += line.size() - k;
             #pragma omp parallel for
             for(size_t i = 0; i <= line.size() - k; i++){
                 string kmer; 
@@ -123,6 +124,9 @@ double HLL::compute(){
             }
         }
     }
+    cout << "Complejidad HLL" << m * log2(log2(countKmers)) << endl;
+
+
     return estimate();
 
 }
