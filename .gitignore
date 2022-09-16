@@ -1,6 +1,7 @@
-
-files/*
 .vscode
 a.out
 
 
+files/GCF_000001405.39_GRCh38.p13_genomic.fna
+files/GCF_000308155.1_EptFus1.0_genomic.fna
+files/file1.fna
