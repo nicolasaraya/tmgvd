@@ -1,4 +1,4 @@
-#include "hyperloglog.h"
+#include "hyperloglog.hpp"
 
 using namespace std; 
 
@@ -80,7 +80,6 @@ double HLL::compute(){
     ifstream file;
     file.open(pathFile);
     string line; 
-    uint64_t count = 0;
     uint64_t countKmers = 0;
     omp_set_num_threads(7);
 
