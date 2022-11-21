@@ -1,5 +1,6 @@
 CC=g++
-CFLAGS=-g -O0 -fopenmp -lm -Wall -std=c++11 -DNDEBUG -I ./sdsl_lib/include -L ./sdsl_lib/lib -lsdsl -ldivsufsort -ldivsufsort64 
+CFLAGS=-g -O0 -fopenmp -lm -Wall -std=c++11 -DNDEBUG -I sdsl_lib/include/  -L sdsl_lib/lib/ 
+LSDSLFLAGS=-lsdsl -ldivsufsort -ldivsufsort64 
 EXECUTABLE=main.o
 CONFIGURE=clear mk
 OBJECTS = main.cpp hyperloglog.cpp hyperloglog.hpp metrictime2.hpp
@@ -14,11 +15,13 @@ mk:
 	cd data && gzip -d file.fna.gz && cd ..
 
 main.o: 
-	$(CC) $(CFLAGS) -o hll $(OBJECTS)
+	$(CC) $(CFLAGS) $(OBJECTS) $(LSDSLFLAGS)
 
 clear:
 	rm -fr hll
 	rm -rf data
+	rm -rf sdsl_lib
+	rm -rf sdsl-lite
 
 install-sdsl:
 	git clone https://github.com/simongog/sdsl-lite.git

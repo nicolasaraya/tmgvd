@@ -9,6 +9,8 @@ make configure
 
 Install sdsl
 
+- requeriments: `sudo apt-get install make cmake -y`
+
 ```bash
 make install-sdsl
 ```
