@@ -5,27 +5,31 @@
 #include <fstream>
 #include <omp.h>
 #include <mutex>
+#include <sdsl/vectors.hpp>
+#include "Utils.hpp"
 
 using namespace std; 
 
 
 class HLL{
     public:
-        HLL(const string, const unsigned char);
+        HLL(const string, unsigned char);
         ~HLL();
         double compute();
         int* getSketch();
         double estimate();
         bool unionHLL(int*);
     private:
-        const int b = 6;
-        const int m = pow(2,b);
+        
         double alpha;
         mutex* mtx;
+
+        void* M_ptr;
+
         int* M;
         hash<string> h;
         string pathFile; 
-        unsigned char k;
+        unsigned char option; 
         /*********/
         void update_alpha();
         int p(uint64_t);

@@ -4,27 +4,23 @@
 #include <omp.h>
 #include "hyperloglog.hpp"
 #include "metrictime2.hpp"
-#include <sdsl/suffix_arrays.hpp>
 
 using namespace std; 
 
-const unsigned char k = 31; 
 const string pathFile = "./data/file.fna";
 
-
 int main(int argc, char const *argv[]){
-    /*
+    
     HLL* h;
 
-
     TIMERSTART(_HLL);
-    h = new HLL(pathFile, k);
+    h = new HLL(pathFile, 1);
     TIMERSTOP(_HLL);
 
     if(h != NULL) delete(h);
     return 0;
 
-    */
+    
     /*
     sdsl::csa_wt<> fm_index;
     sdsl::construct_im(fm_index, "mississippi!", 1);

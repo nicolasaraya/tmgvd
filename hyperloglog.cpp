@@ -2,14 +2,24 @@
 
 using namespace std; 
 
-HLL::HLL(const string pathFile, const unsigned char k){
+HLL::HLL(const string pathFile, unsigned char option){
     this->pathFile = pathFile;
-    this->k = k; 
+    this->option = option; 
+
+    int a = b;
+    
+    if(option == 1){
+        sdsl::int_vector<a>* M_int_vector = new sdsl::int_vector<a>();
+    }
+
+
     M = new int[m];
     mtx = new mutex[m];
     for(int i = 0; i < m; i++) M[i] = 0;
-
     update_alpha();
+
+
+    cout << "HLL params [ m: " << m << ", b: " << b << ", error: " << error << " ] " << endl; 
 
 }
 
@@ -50,7 +60,6 @@ void HLL::add(string kmer){
     M[j] = max(M[j],p(w));
     mtx[j].unlock();
 }
-
 
 double HLL::estimate(){
     //cout << "computando " << endl;
