@@ -3,9 +3,11 @@
 #include <iostream> 
 #include <math.h>
 #include <fstream>
+#include <sdsl/vectors.hpp>
+#include <sdsl/suffix_arrays.hpp>
+#include <vector>
 #include <omp.h>
 #include <mutex>
-#include <sdsl/vectors.hpp>
 #include "Utils.hpp"
 
 using namespace std; 
@@ -13,23 +15,25 @@ using namespace std;
 
 class HLL{
     public:
-        HLL(const string, unsigned char);
+        HLL(const string);
         ~HLL();
         double compute();
-        int* getSketch();
         double estimate();
-        bool unionHLL(int*);
+        double entropy();
     private:
         
         double alpha;
-        mutex* mtx;
+        mutex mtx[m];
 
-        void* M_ptr;
+        int* M = NULL; 
+        sdsl::int_vector<> M_int_vector; 
+        vector<int> freq; 
+        uint64_t N;
+        //sdsl::enc_vector M_enc_vector;
 
-        int* M;
+
         hash<string> h;
         string pathFile; 
-        unsigned char option; 
         /*********/
         void update_alpha();
         int p(uint64_t);

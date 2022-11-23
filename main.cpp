@@ -1,23 +1,23 @@
 #include <iostream>
-#include <functional>
-#include <fstream>
-#include <omp.h>
 #include "hyperloglog.hpp"
 #include "metrictime2.hpp"
 
 using namespace std; 
 
-const string pathFile = "./data/file.fna";
 
 int main(int argc, char const *argv[]){
     
+    const string pathFile = argv[1];
     HLL* h;
-
     TIMERSTART(_HLL);
-    h = new HLL(pathFile, 1);
+    h = new HLL(pathFile);
+    double a =  h->compute();
+    double b = h->entropy();
+    cout << "Estimation: " << a << endl;
+    cout << "Entropia: " << b << endl;
     TIMERSTOP(_HLL);
 
-    if(h != NULL) delete(h);
+    //if(h != NULL) delete(h);
     return 0;
 
     
